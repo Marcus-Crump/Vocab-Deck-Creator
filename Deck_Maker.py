@@ -14,6 +14,31 @@ def get_soup(link):
     page.close()
     return soup
 
+def get_kanji_and_kana(input, soup):
+    term_block = soup.find("div", class_="concept_light clearfix")
+    term = term_block.find("span", class_="text").text.strip()
+    hurigana_list =  []
+    hurigana = []
+
+    for c in term_block.find("span", class_="furigana").find_all("span"):
+        c = c.text.strip()
+        if c != "":
+            hurigana_list.append(c)
+
+    hurigana_list.reverse()
+
+    for c in term:
+        if ord(c) < 12354 or ord(c) > 12447:
+            hurigana.append(hurigana_list.pop())
+        else:
+            hurigana.append(c)
+
+    return term, "".join(hurigana)
+
+def write_kanji_line(file, input, soup):
+    kanji, kana = get_kanji_and_kana(input)
+    file.write(f"{kanji},{kana}")
+
 def open_ended():
     name = input("Enter name of deck:")
     while name == "":
