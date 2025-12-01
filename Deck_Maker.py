@@ -73,6 +73,27 @@ def open_ended():
     kanji.close()
     vocab.close()
 
+def deck_from_list(file):
+    name = input("Enter name of deck:")
+
+    while name == "":
+        clear()
+        name = input("Please input valid name:")
+
+    clear()
+
+    kanji = open(f"{name}-漢字.csv")
+    vocab = open(f"{name}-単語.csv")
+
+    with open(file,'r') as lst:
+        for l in lst:
+            soup = get_soup(f"https://jisho.org/search/{l}")
+            write_kanji_line(kanji,soup)
+            write_vocab_line(vocab,soup)
+
+    kanji.close()
+    vocab.close()
+
 def main():
     clear()
     clear()
@@ -85,7 +106,13 @@ def main():
     if choice == "1" or choice == "１":
         open_ended()
     else:
-        pass
+        dne = True
+        while dne:
+            try:
+                file = input("File path: ")
+                deck_from_list(file)
+            except FileNotFoundError:
+                print("File not found, please try again...")
 
 
 if __name__ == "__main__":
