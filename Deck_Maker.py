@@ -14,6 +14,29 @@ def get_soup(link):
     page.close()
     return soup
 
+def open_ended():
+    name = input("Enter name of deck:")
+    while name == "":
+        clear()
+        name = input("Please input valid name:")
+    clear()
+    term = input("Term:").strip()
+
+    if term == "": return
+
+    kanji = open(f"{name}-漢字.csv",'a')
+    vocab = open(f"{name}-単語.csv", 'a')
+
+    while term != "":
+        soup = get_soup(f"https://jisho.org/search/{term}")
+        write_kanji_line(kanji, term, soup)
+        write_vocab_line(vocab, term, soup)
+        term = input("Term:").strip()
+        clear()
+
+    kanji.close()
+    vocab.close()
+
 def main():
     clear()
     clear()
