@@ -35,12 +35,6 @@ def get_kanji_and_kana(soup):
 
     return term, "".join(hurigana)
 
-# def get_term_and_def(soup):
-#     term_block = soup.find("div", class_="concept_light clearfix")
-#     term = term_block.find("span", class_="text").text.strip()
-#     defn = term_block.find_all("span", class_="meaning-meaning").text
-#     return term, defn
-
 def write_kanji_line(file, soup):
     kanji, kana = get_kanji_and_kana(soup)
     file.write(f"{kanji},{kana}\n")
@@ -53,11 +47,8 @@ def write_vocab_line(file, soup):
     for i in defn_list:
         item = i.find("span", class_="meaning-meaning").text.strip()
         if ord(item[0]) <= 255:
-            defn += item + " \n"
-        
-    print(defn)
-    input()
-    file.write(f"{term, defn}\n")
+            defn += item + "; "
+    file.write(f"{term}, {defn}\n")
 
 def open_ended():
     name = input("Enter name of deck:")
