@@ -111,9 +111,13 @@ def main():
             try:
                 file = input("File path: ")
                 deck_from_list(file)
+                dne = False
             except FileNotFoundError:
                 print("File not found, please try again...")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (r.exceptions.ConnectionError, r.exceptions.ConnectTimeout) as e:
+        print(f"Connection could not be established ({e})")
