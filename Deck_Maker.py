@@ -82,17 +82,37 @@ def deck_from_list(file):
 
     clear()
 
-    kanji = open(f"{name}-漢字.csv")
-    vocab = open(f"{name}-単語.csv")
-
     with open(file,'r') as lst:
+        animation = ["Generating list","Generating list.","Generating list..","Generating list..."]
+        place = 0
+        kanji = open(f"{name}-漢字.csv", 'a')
+        vocab = open(f"{name}-単語.csv", 'a')
         for l in lst:
+            clear()
+            print(animation[place%4])
+            print(f"Term:{l}")
+
+            place += 1
+            
             soup = get_soup(f"https://jisho.org/search/{l}")
             write_kanji_line(kanji,soup)
             write_vocab_line(vocab,soup)
 
+    clear()
     kanji.close()
     vocab.close()
+
+    print("Deck creation complete")
+
+def get_file_path():
+    path = input("File path: ")
+    while path == "":
+        clear()
+        path = input("Please provide a file path\nFile path:")
+
+    if path[:2] == "./" or path[:2] == "./":
+        path = f"{os.getcwd()}/{path[2:]}"
+    return path
 
 def main():
     clear()
@@ -106,15 +126,21 @@ def main():
     if choice == "1" or choice == "１":
         open_ended()
     else:
-        dne = True
-        while dne:
+        loop = True
+        while loop:
             try:
-                file = input("File path: ")
+                file = get_file_path()
                 deck_from_list(file)
-                dne = False
+                loop = False
             except FileNotFoundError:
-                print("File not found, please try again...")
-
+                print("File not found...")
+                if input("Try again (y)?:").lower() != 'y':
+                    loop = False
+            except UnicodeDecodeError:
+                print("File type not accepted at this time...")
+                if input("Try again (y)?:").lower() != 'y':
+                    loop = False
+    print("Program has ended")
 
 if __name__ == "__main__":
     try:
